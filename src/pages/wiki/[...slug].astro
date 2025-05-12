@@ -1,0 +1,139 @@
+---
+import { getCollection } from 'astro:content';
+import WikiLayout from '../../layouts/WikiLayout.astro';
+
+export async function getStaticPaths() {
+  const wikiEntries = await getCollection('wiki');
+  return wikiEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<WikiLayout>
+  <div class="wiki-content">
+    <Content />
+  </div>
+</WikiLayout>
+
+<style>
+  .wiki-content {
+    line-height: 1.6;
+  }
+
+  .wiki-content :global(h1) {
+    color: var(--heading-color, #2c3e50);
+    border-bottom: 2px solid var(--border-color, #eaecef);
+    padding-bottom: 0.3em;
+  }
+
+  .wiki-content :global(h2) {
+    color: var(--subheading-color, #1a73e8);
+    border-bottom: 1px solid var(--border-color, #eaecef);
+    padding-bottom: 0.3em;
+  }
+
+  .wiki-content :global(h3) {
+    color: var(--subheading-color-alt, #34495e);
+  }
+
+  .wiki-content :global(pre) {
+    background-color: var(--code-bg, #f6f8fa);
+    border-radius: 6px;
+    padding: 16px;
+    overflow: auto;
+  }
+
+  .wiki-content :global(code) {
+    background-color: var(--inline-code-bg, rgba(27, 31, 35, 0.05));
+    border-radius: 3px;
+    padding: 0.2em 0.4em;
+    font-family: monospace;
+  }
+
+  .wiki-content :global(table) {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+  }
+
+  .wiki-content :global(th),
+  .wiki-content :global(td) {
+    border: 1px solid var(--border-color, #dfe2e5);
+    padding: 8px 12px;
+  }
+
+  .wiki-content :global(th) {
+    background-color: var(--table-header-bg, #f6f8fa);
+  }
+
+  .wiki-content :global(a) {
+    color: var(--link-color, #0366d6);
+    text-decoration: none;
+  }
+
+  .wiki-content :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  .wiki-content :global(blockquote) {
+    border-left: 4px solid var(--blockquote-border, #dfe2e5);
+    color: var(--blockquote-color, #6a737d);
+    padding: 0 1em;
+    margin: 0;
+  }
+
+  .wiki-content :global(ul),
+  .wiki-content :global(ol) {
+    padding-left: 2em;
+  }
+  
+  /* Dark mode styles applied via CSS variables */
+  :global(html.dark) .wiki-content :global(h1) {
+    color: #e0e0e0;
+    border-bottom-color: #3a3a3a;
+  }
+  
+  :global(html.dark) .wiki-content :global(h2) {
+    color: #7ab3ff;
+    border-bottom-color: #3a3a3a;
+  }
+  
+  :global(html.dark) .wiki-content :global(h3) {
+    color: #a0c0ff;
+  }
+  
+  :global(html.dark) .wiki-content :global(pre) {
+    background-color: #2a2a2a;
+  }
+  
+  :global(html.dark) .wiki-content :global(code) {
+    background-color: rgba(200, 200, 200, 0.1);
+  }
+  
+  :global(html.dark) .wiki-content :global(table) {
+    border-color: #3a3a3a;
+  }
+  
+  :global(html.dark) .wiki-content :global(th),
+  :global(html.dark) .wiki-content :global(td) {
+    border-color: #3a3a3a;
+  }
+  
+  :global(html.dark) .wiki-content :global(th) {
+    background-color: #2a2a2a;
+  }
+  
+  :global(html.dark) .wiki-content :global(a) {
+    color: #7ab3ff;
+  }
+  
+  :global(html.dark) .wiki-content :global(blockquote) {
+    border-left-color: #3a3a3a;
+    color: #aaa;
+  }
+</style>
