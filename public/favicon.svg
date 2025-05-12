@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @font-face {
+      font-family: 'CustomMono';
+      src: local('Courier New');
+    }
+  </style>
+  <g>
+    <path d="M256 150 L358 210 L358 330 L256 390 L154 330 L154 210 Z" 
+          fill="none" 
+          stroke="#8A2BE2" 
+          stroke-width="20"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+    <circle cx="256" cy="210" r="12" fill="#8A2BE2"/>
+    <circle cx="358" cy="270" r="12" fill="#8A2BE2"/>
+    <circle cx="256" cy="330" r="12" fill="#8A2BE2"/>
+    <circle cx="154" cy="270" r="12" fill="#8A2BE2"/>
+    <path d="M358 270 L420 300 L420 420" 
+          fill="none" 
+          stroke="#8A2BE2" 
+          stroke-width="20"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+    <circle cx="420" cy="420" r="12" fill="#8A2BE2"/>
+    <text x="50%" y="480" 
+          font-family="CustomMono, monospace" 
+          font-size="40" 
+          fill="#8A2BE2"
+          text-anchor="middle"
+          dominant-baseline="middle">
+      HEXED WIKI
+    </text>
+  </g>
+</svg>

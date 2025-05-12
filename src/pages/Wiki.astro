@@ -1,0 +1,82 @@
+---
+import WikiLayout from '../layouts/WikiLayout.astro';
+---
+
+<WikiLayout>
+	<div class="wiki-content">
+		<slot />
+	</div>
+</WikiLayout>
+
+<style>
+	.wiki-content {
+		line-height: 1.6;
+	}
+
+	.wiki-content :global(h1) {
+		color: #2c3e50;
+		border-bottom: 2px solid #eaecef;
+		padding-bottom: 0.3em;
+	}
+
+	.wiki-content :global(h2) {
+		color: #1a73e8;
+		border-bottom: 1px solid #eaecef;
+		padding-bottom: 0.3em;
+	}
+
+	.wiki-content :global(h3) {
+		color: #34495e;
+	}
+
+	.wiki-content :global(pre) {
+		background-color: #f6f8fa;
+		border-radius: 6px;
+		padding: 16px;
+		overflow: auto;
+	}
+
+	.wiki-content :global(code) {
+		background-color: rgba(27, 31, 35, 0.05);
+		border-radius: 3px;
+		padding: 0.2em 0.4em;
+		font-family: monospace;
+	}
+
+	.wiki-content :global(table) {
+		border-collapse: collapse;
+		width: 100%;
+		margin: 1em 0;
+	}
+
+	.wiki-content :global(th),
+	.wiki-content :global(td) {
+		border: 1px solid #dfe2e5;
+		padding: 8px 12px;
+	}
+
+	.wiki-content :global(th) {
+		background-color: #f6f8fa;
+	}
+
+	.wiki-content :global(a) {
+		color: #0366d6;
+		text-decoration: none;
+	}
+
+	.wiki-content :global(a:hover) {
+		text-decoration: underline;
+	}
+
+	.wiki-content :global(blockquote) {
+		border-left: 4px solid #dfe2e5;
+		color: #6a737d;
+		padding: 0 1em;
+		margin: 0;
+	}
+
+	.wiki-content :global(ul),
+	.wiki-content :global(ol) {
+		padding-left: 2em;
+	}
+</style>

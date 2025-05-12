@@ -1,0 +1,281 @@
+---
+import { getCollection } from 'astro:content';
+import WikiLayout from '../layouts/WikiLayout.astro';
+import VisitorCounter from '../components/VisitorCounter.astro';
+
+// Get all wiki entries
+const allWikiEntries = await getCollection('wiki');
+
+// Group entries by category
+const categorizedEntries = allWikiEntries.reduce((acc, entry) => {
+  const category = entry.data.category || 'Featured';
+  if (!acc[category]) {
+    acc[category] = [];
+  }
+  acc[category].push(entry);
+  return acc;
+}, {} as Record<string, typeof allWikiEntries>);
+
+// Define featured categories and their display order
+const featuredCategories = ['Mobile Apps', 'PC'];
+
+// Sort entries within each category by order property if available, then by title
+for (const category in categorizedEntries) {
+  categorizedEntries[category].sort((a, b) => {
+    // If both have order, sort by order
+    if (a.data.order !== undefined && b.data.order !== undefined) {
+      return a.data.order - b.data.order;
+    }
+    // If only a has order, a comes first
+    if (a.data.order !== undefined) return -1;
+    // If only b has order, b comes first
+    if (b.data.order !== undefined) return 1;
+    // Otherwise sort by title
+    return a.data.title.localeCompare(b.data.title);
+  });
+}
+
+// Get a limited number of entries per category for the homepage
+const getTopEntriesForCategory = (category: string, limit = 3) => {
+  return (categorizedEntries[category] || []).slice(0, limit);
+};
+
+// Clean markdown text
+function cleanMarkdownText(text: string) {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove markdown links but keep text
+    .replace(/[*_`#]/g, '') // Remove markdown formatting characters
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+}
+---
+
+<WikiLayout>
+  <div class="wiki-content">
+    <div class="hero-section">
+      <h1>Hexed Wiki</h1>
+      <p class="subtitle">
+        Explore our curated collection of guides and resources
+      </p>
+      
+      <VisitorCounter />
+    </div>
+    
+    <div class="featured-categories">
+      {featuredCategories.map((category) => (
+        categorizedEntries[category] && categorizedEntries[category].length > 0 && (
+          <div class="category-section">
+            <div class="category-header">
+              <h2>{category}</h2>
+            </div>
+            <ul class="page-list">
+              {getTopEntriesForCategory(category).map((entry) => {
+                const firstParagraph = entry.body
+                  .split('\n')
+                  .find(line => line.trim() && !line.startsWith('#'))
+                  ?.trim();
+
+                const cleanDescription = firstParagraph 
+                  ? cleanMarkdownText(firstParagraph).substring(0, 150) + '...'
+                  : '';
+
+                return (
+                  <li>
+                    <a href={`/wiki/${entry.slug}`}>
+                      <div class="card-content">
+                        <h3>{entry.data.title}</h3>
+                        <p class="description">
+                          {cleanDescription}
+                        </p>
+                      </div>
+                      <div class="card-arrow">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M5 12h14"></path>
+                          <path d="M12 5l7 7-7 7"></path>
+                        </svg>
+                      </div>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )
+      ))}
+    </div>
+  </div>
+</WikiLayout>
+
+<style>
+  .wiki-content {
+    line-height: 1.6;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .hero-section {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 1rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(26, 115, 232, 0.1) 0%, rgba(66, 133, 244, 0.05) 100%);
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+    color: #555;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .featured-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin-bottom: 4rem;
+  }
+  
+  .category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .category-header h2 {
+    color: #1a73e8;
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+    border: none;
+    padding: 0;
+  }
+  
+  .page-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .page-list li {
+    margin: 0;
+    height: 100%;
+  }
+  
+  .page-list a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: 1px solid #eaecef;
+  }
+  
+  .page-list a:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border-color: #1a73e8;
+  }
+  
+  .card-content {
+    flex: 1;
+  }
+  
+  .card-arrow {
+    color: #1a73e8;
+    opacity: 0.7;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  
+  .page-list a:hover .card-arrow {
+    opacity: 1;
+    transform: translateX(4px);
+  }
+  
+  .page-list h3 {
+    font-size: 1.3rem;
+    color: #1a73e8;
+    margin: 0 0 0.8rem 0;
+  }
+  
+  .description {
+    margin: 0;
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  h1 {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    border: none;
+  }
+  
+  /* Dark mode styles */
+  :global(html.dark) .hero-section {
+    background: linear-gradient(135deg, rgba(26, 115, 232, 0.15) 0%, rgba(66, 133, 244, 0.08) 100%);
+  }
+  
+  :global(html.dark) .subtitle {
+    color: #aaa;
+  }
+  
+  :global(html.dark) .page-list a {
+    background-color: #252525;
+    border-color: #3a3a3a;
+  }
+  
+  :global(html.dark) .page-list a:hover {
+    border-color: #7ab3ff;
+  }
+  
+  :global(html.dark) .description {
+    color: #aaa;
+  }
+  
+  :global(html.dark) h1 {
+    color: #e0e0e0;
+  }
+  
+  :global(html.dark) .category-header h2 {
+    color: #7ab3ff;
+  }
+  
+  :global(html.dark) .page-list h3 {
+    color: #7ab3ff;
+  }
+  
+  :global(html.dark) .card-arrow {
+    color: #7ab3ff;
+  }
+  
+  @media (max-width: 768px) {
+    .page-list {
+      grid-template-columns: 1fr;
+    }
+    
+    .hero-section {
+      padding: 1.5rem 1rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+    }
+    
+    .subtitle {
+      font-size: 1.1rem;
+    }
+  }
+</style>
