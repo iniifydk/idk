@@ -1,3 +1,7 @@
+---
+title: Security Measures
+---
+
 ## Personal Security Measures
 
 # 🐧 Linux
