@@ -1,0 +1,68 @@
+---
+// Initialize Supabase client
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+);
+
+// Get current visitor count
+let { data: visitorCount, error } = await supabase
+  .from('visitor_counts')
+  .select('count')
+  .single();
+
+if (error && error.code === 'PGRST116') {
+  // Table or count doesn't exist yet, initialize it
+  const { data, error: insertError } = await supabase
+    .from('visitor_counts')
+    .insert([{ count: 1 }])
+    .select()
+    .single();
+    
+  if (!insertError) {
+    visitorCount = data;
+  }
+} else if (!error) {
+  // Increment the counter
+  const { data, error: updateError } = await supabase
+    .from('visitor_counts')
+    .update({ count: visitorCount.count + 1 })
+    .eq('id', visitorCount.id)
+    .select()
+    .single();
+    
+  if (!updateError) {
+    visitorCount = data;
+  }
+}
+---
+
+<div class="visitor-counter">
+  <p>
+    👥 Visitors: {visitorCount?.count || 0}
+  </p>
+</div>
+
+<style>
+  .visitor-counter {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    margin-top: 1rem;
+  }
+
+  .visitor-counter p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  /* Dark mode */
+  :global(html.dark) .visitor-counter p {
+    color: #aaa;
+  }
+</style>
