@@ -90,7 +90,7 @@ title: Security Measures
 
 - **Operating System**: [GrapheneOS](https://grapheneos.org/) (hardened Android)
 - **2FA**: [Aegis Authenticator](https://getaegis.app/)
-- Modded apps are often more secure than normal apps, which is why we have an [Android Apps](../mobile-apps/android-apps.md) section
+- Modded apps are often more secure than normal apps, which is why we have an [Android Apps](/wiki/mobile-apps/android-apps) section
 > *VPN/Mail/Browser with Extensions/Messaging/Password Manager  Same as Linux/Windows*
 
 ---
