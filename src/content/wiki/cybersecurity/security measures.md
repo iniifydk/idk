@@ -80,7 +80,7 @@ title: Security Measures
     - [Simplewall](https://www.henrypp.org/product/simplewall)
     - [Safing Portmaster](https://safing.io/)
 - **Metadata Scrubbing**: [ExifTool](https://exiftool.org/)
-  Modded apps are often more secure than normal apps, which is why we have an [PC modification](../PC/modifications.md) section
+  Modded apps are often more secure than normal apps, which is why we have an [PC modification](/wiki/PC/modifications.md) section
 
 > *Browser, VPN, email, extensions, password manager, sandboxing, and messaging remain consistent with Linux setup.*
 
